@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\GoogleCalendar;
+use Illuminate\Support\Facades\Log;
 
 class GoogleCalendarController extends Controller
 {
@@ -21,12 +22,14 @@ class GoogleCalendarController extends Controller
         return redirect($authUrl);
     }
 
-    public function store()
+    public function store(Request $request)
     {
     	$client = $this->googleCalendar->getClient();
-        $authCode = request('code');
+        $authCode = $request->code;
+        Log::info($authCode);
+        
         // Load previously authorized credentials from a file.
-        $credentialsPath = storage_path('keys/client_secret_generated.json');
+        $credentialsPath = public_path('credentials_generated.json');
         // Exchange authorization code for an access token.
         $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
 
